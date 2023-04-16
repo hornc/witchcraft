@@ -14,7 +14,8 @@ function hook_chunks() {
 	sponge=$(sed 's/\([AB]\)/\1\1\1/g' <<< $sponge)
 	sponge=$(sed 's/A/CDC/g;s/B/DED/g' <<< $sponge)
 	sponge=$(sed 's/C/FGF/g;' <<< $sponge)
-	sponge=$(sed 's/F/HHH/g;s/G/III/g' <<< $sponge)
+	sponge=$(sed 's/D/FGF/g;' <<< $sponge)
+	sponge=$(sed 's/F/III/g;s/G/III/g' <<< $sponge)
 
 	sponge=$(sed 's/\(E\)/\1\1\1\1\1\1\1\1\1/g' <<< $sponge)
 	sponge=$(sed 's/F/XXX/g;s/I/XSX/g;s/E/SSS/g' <<< $sponge)
@@ -46,72 +47,53 @@ function hook_chunks() {
 
 	# and split chunk cols into 16x16x16 chunk sections 
 	# since idk how to render full cols...
-	readarray -t one < <(fold -w8192 <<< $one)
+
+	#readarray -t one < <(fold -w8192 <<< $one)
 	chunk_header
-	chunk+=${one[0]}
+	chunk+=$one
+	chunk+=$(printf '00%.0s' {1..3280})
 	chunk_footer
 	echo "$chunk" > $TEMP/world/0000000000000000
 
-	chunk_header
-	chunk+=${one[1]}
-	chunk+=$(printf '00%.0s' {1..1280})
-	chunk_footer
-	echo "$chunk" > $TEMP/world/0000000000000002
 
-	readarray -t two < <(fold -w8192 <<< $two)
+	#readarray -t two < <(fold -w8192 <<< $two)
 	chunk_header
 	#log "DEBUG $(wc -c <<< $two)"
 
 	#log "DEBUG $(wc -c <<< ${two[0]})"
 	#log "DEBUG $(wc -c <<< ${two[1]})"
-	chunk+=${two[0]}
-	#chunk+=$two
-	#chunk+=$(printf '12%.0s' {1..1280})
+	chunk+=$two
+	chunk+=$(printf '00%.0s' {1..3280})
 	chunk_footer
 	echo "$chunk" > $TEMP/world/FFFFFFFF00000000
 
+
+	#readarray -t tri < <(fold -w8192 <<< $tri)
 	chunk_header
-	chunk+=${two[1]}
-	log "DEBUG $(wc -c <<< ${two[1]})"
-	chunk+=$(printf '00%.0s' {1..1280})
-	chunk_footer
-	echo "$chunk" > $TEMP/world/FFFFFFFF00000002
-	
-	readarray -t tri < <(fold -w8192 <<< $tri)
-	chunk_header
-	chunk+=${tri[0]}
+	chunk+=$tri
+	chunk+=$(printf '03%.0s' {1..3280})
 	chunk_footer
 	echo "$chunk" > $TEMP/world/0000000000000001
 
-	chunk_header
-	chunk+=${tri[1]}
-	chunk+=$(printf '00%.0s' {1..1280})
-	chunk_footer
-	echo "$chunk" > $TEMP/world/0000000000000003
 	
-	readarray -t tet < <(fold -w8192 <<< $tet)
+	#readarray -t tet < <(fold -w8192 <<< $tet)
 	chunk_header
-	chunk+=${tet[0]}
+	chunk+=$tet
+	chunk+=$(printf '00%.0s' {1..3280})
 	chunk_footer
 	echo "$chunk" > $TEMP/world/FFFFFFFF00000001
 
-	chunk_header
-	chunk+=${tet[1]}
-	chunk+=$(printf '00%.0s' {1..1280})
-	chunk_footer
-	echo "$chunk" > $TEMP/world/FFFFFFFF00000003
-
-	pkt_chunk FFFFFFFF FFFFFFFF 00
-	pkt_chunk FFFFFFFF 00000000 00
-	pkt_chunk FFFFFFFF 00000001
-	pkt_chunk FFFFFFFF 00000002
-	pkt_chunk FFFFFFFF 00000003
+	pkt_chunk FFFFFFFF FFFFFFFF
+	pkt_chunk FFFFFFFF 00000000  # two
+	pkt_chunk FFFFFFFF 00000001  # four
+	pkt_chunk FFFFFFFF 00000002 00
+	pkt_chunk FFFFFFFF 00000003 00
 
 	pkt_chunk 00000000 FFFFFFFF 00
-	pkt_chunk 00000000 00000000
-	pkt_chunk 00000000 00000001 00
-	pkt_chunk 00000000 00000002
-	pkt_chunk 00000000 00000003
+	pkt_chunk 00000000 00000000   # one
+	pkt_chunk 00000000 00000001   # three
+	pkt_chunk 00000000 00000002 00
+	pkt_chunk 00000000 00000003 00
 	
 	pkt_chunk 00000001 FFFFFFFF 00
 	pkt_chunk 00000001 00000000 00
