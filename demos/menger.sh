@@ -13,12 +13,13 @@ function hook_chunks() {
 	sponge=ABA
 	sponge=$(sed 's/\([AB]\)/\1\1\1/g' <<< $sponge)
 	sponge=$(sed 's/A/CDC/g;s/B/DED/g' <<< $sponge)
-	sponge=$(sed 's/C/FGF/g;' <<< $sponge)
-	sponge=$(sed 's/D/FGF/g;' <<< $sponge)
-	sponge=$(sed 's/F/III/g;s/G/III/g' <<< $sponge)
 
-	sponge=$(sed 's/\(E\)/\1\1\1\1\1\1\1\1\1/g' <<< $sponge)
-	sponge=$(sed 's/F/XXX/g;s/I/XSX/g;s/E/SSS/g' <<< $sponge)
+	sponge=$(sed 's/\([CDE]\)/\1\1\1\1\1\1\1\1\1/g' <<< $sponge)
+
+	sponge=$(sed 's/C/XXX/g;' <<< $sponge)
+	sponge=$(sed 's/D/XSX/g;' <<< $sponge)
+	sponge=$(sed 's/E/SSS/g;' <<< $sponge)
+
 	sponge=$(sed 's/\([XS]\)/\1\1\1\1\1\1\1\1\1/g' <<< $sponge)
 
 	# Split sponge into 4 16x16 chunks:
