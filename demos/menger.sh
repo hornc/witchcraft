@@ -3,7 +3,7 @@
 spawn_pos=(5 0 5)
 
 function hook_ping() {
-	json='{"version":{"name":"1.18.1","protocol":757},"players":{"max":1,"online":0,"sample":[]},"description":{"text":"Menger Sponge"},"favicon":"data:image/png;base64,'"$(base64 -w0 menger.png)"'"}'
+	json='{"version":{"name":"1.18.1","protocol":757},"players":{"max":1,"online":0,"sample":[]},"description":{"text":"Menger Sponge"},"favicon":"data:image/png;base64,'"$(base64 -w0 demos/menger.png)"'"}'
 	res="$(str_len "$json")$(echo -n "$json" | xxd -p)"
 	send_packet "00" "$res"
 }
