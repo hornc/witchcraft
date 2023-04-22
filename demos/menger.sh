@@ -72,7 +72,8 @@ function hook_chunks() {
 	#readarray -t tri < <(fold -w8192 <<< $tri)
 	chunk_header
 	chunk+=$tri
-	chunk+=$(printf '03%.0s' {1..3280})
+	chunk+=$(printf '00%.0s' {1..1792})  # fill up current chunk with air
+	chunk+=$(printf '03%.0s' {1..32})    # 16x16x16 block of stone
 	chunk_footer
 	echo "$chunk" > $TEMP/world/0000000000000001
 
