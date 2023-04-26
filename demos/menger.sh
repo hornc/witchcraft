@@ -56,13 +56,8 @@ function hook_chunks() {
 	chunk_footer
 	echo "$chunk" > $TEMP/world/0000000000000000
 
-
 	#readarray -t two < <(fold -w8192 <<< $two)
 	chunk_header
-	#log "DEBUG $(wc -c <<< $two)"
-
-	#log "DEBUG $(wc -c <<< ${two[0]})"
-	#log "DEBUG $(wc -c <<< ${two[1]})"
 	chunk+=$two
 	chunk+=$(printf '00%.0s' {1..3280})
 	chunk_footer
@@ -71,13 +66,23 @@ function hook_chunks() {
 
 	#readarray -t tri < <(fold -w8192 <<< $tri)
 	chunk_header
-	chunk+=$tri
-	chunk+=$(printf '00%.0s' {1..1792})  # fill up current chunk with air
-	chunk+=$(printf '03%.0s' {1..32})    # 16x16x16 block of stone
+	xhead=$chunk
+	xchunk+=$tri
+	xchunk+=$(printf '00%.0s' {1..1792})  # fill up current chunk with air
+	#chunk+=$(printf '03%.0s' {1..50})    # 16x16x16 block of stone
+	chunk+=$xchunk
+	chunk+=$(repeat 64 "03")
+	chunk+="00 00 00 00 "
+	chunk+=$xhead
+	chunk+=$xchunk
 	chunk_footer
+	chunk+="00"
+	chunk+="16 00 00 00 00 00 00 00 00"
+	#chunk+=$(repeat  1392 "03")  # with 64 + 1393 x '03' we get a full column
+	chunk+="09"
+	chunk+=$(repeat  1378 "03")
 	echo "$chunk" > $TEMP/world/0000000000000001
 
-	
 	#readarray -t tet < <(fold -w8192 <<< $tet)
 	chunk_header
 	chunk+=$tet
