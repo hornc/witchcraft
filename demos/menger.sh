@@ -71,16 +71,18 @@ function hook_chunks() {
 	xchunk+=$(printf '00%.0s' {1..1792})  # fill up current chunk with air
 	#chunk+=$(printf '03%.0s' {1..50})    # 16x16x16 block of stone
 	chunk+=$xchunk
-	chunk+=$(repeat 64 "03")
-	chunk+="00 00 00 00 "
+	#chunk+=$(repeat 2 "03")
+	#chunk+=$(repeat 64 "03")
+	chunk+="00 30 00"
+	#chunk+="03 03 00 00 00 00"
 	chunk+=$xhead
 	chunk+=$xchunk
 	chunk_footer
-	chunk+="00"
-	chunk+="16 00 00 00 00 00 00 00 00"
+	#chunk+="00"
+	#chunk+="16 00 00 00 00 00 00 00 00"
 	#chunk+=$(repeat  1392 "03")  # with 64 + 1393 x '03' we get a full column
-	chunk+="09"
-	chunk+=$(repeat  1378 "03")
+	#chunk+="09"
+	#chunk+=$(repeat  1378 "03")
 	echo "$chunk" > $TEMP/world/0000000000000001
 
 	#readarray -t tet < <(fold -w8192 <<< $tet)
