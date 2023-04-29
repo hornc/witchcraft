@@ -11,16 +11,19 @@ function hook_ping() {
 function hook_chunks() {
 	# Build 27x27 sponge:
 	sponge=ABA
-	sponge=$(sed 's/\([AB]\)/\1\1\1/g' <<< $sponge)
-	sponge=$(sed 's/A/CDC/g;s/B/DED/g' <<< $sponge)
+	sponge=$(sed 's/A/CDC/g;s/B/EFE/g' <<< $sponge)
+	sponge=$(sed 's/\([CDEF]\)/\11\12\11/g' <<< $sponge)
+	sponge=$(sed 's/C1/aba/g;s/C2/cdc/g' <<< $sponge)
+	sponge=$(sed 's/D1/efe/g;s/D2/ghg/g' <<< $sponge)
+	sponge=$(sed 's/E1/imi/g;s/E2/jmj/g' <<< $sponge)
+	sponge=$(sed 's/F1/kmk/g;s/F2/lml/g' <<< $sponge)
 
-	sponge=$(sed 's/\([CDE]\)/\1\1\1\1\1\1\1\1\1/g' <<< $sponge)
 
-	sponge=$(sed 's/C/XXX/g;' <<< $sponge)
-	sponge=$(sed 's/D/XSX/g;' <<< $sponge)
-	sponge=$(sed 's/E/SSS/g;' <<< $sponge)
-
-	sponge=$(sed 's/\([XS]\)/\1\1\1\1\1\1\1\1\1/g' <<< $sponge)
+	sponge=$(sed "s/[aceg]/$(repeat 81 T)/g" <<< $sponge)
+	sponge=$(sed "s/[bdfh]/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
+	sponge=$(sed "s/[ijkl]/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
+	sponge=$(sed "s/m/$(repeat 81 V)/g" <<< $sponge)
+	sponge=$(sed 's/T/XXX/g;s/U/XSX/g;s/V/SSS/g' <<< $sponge)
 
 	# Split sponge into 4 16x16 chunks:
 	i=0
