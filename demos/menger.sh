@@ -14,32 +14,23 @@ function sub() {
 
 function hook_chunks() {
 	# Build 27x27 sponge:
-	sponge=ABA
-	sponge=$(sed 's/A/CDC/g;s/B/EFE/g' <<< $sponge)
-	sponge=$(sed 's/\([CDEF]\)/\11\12\11/g' <<< $sponge)
-	sponge=$(sed 's/C1/aba/g;s/C2/cdc/g' <<< $sponge)
-	sponge=$(sed 's/D1/efe/g;s/D2/ghg/g' <<< $sponge)
-	sponge=$(sed 's/E1/bmb/g;s/E2/dmd/g' <<< $sponge)
-	sponge=$(sed 's/F1/fmf/g;s/F2/hmh/g' <<< $sponge)
-
+	sponge=$(sed 's/A/CDC/g;s/B/EFE/g;
+		s/\([CDEF]\)/\11\12\11/g;
+		s/C1/aba/g;s/C2/cdc/g;
+		s/D1/efe/g;s/D2/ghg/g;
+		s/E1/bmb/g;s/E2/dmd/g;
+		s/F1/fmf/g;s/F2/hmh/g' <<< ABA)
 	n="N9V9V9VN /g;s/N/"
 	o=" TVT 3V TVT UVU 3V UVU TVT 3V TVT "
 	a="N3TVT3UVU3TVTN /g;s/N/9T9U9T /g"
-	c=$(sub "$a")
 	b="N${o}N /g;s/N/3T3V3T3U3V3U3T3V3T /g"
-	d=$(sub "$b")
 	e="$n TVTTVTTVT UVUUVUUVU TVTTVTTVT /g"
-	g=$(sub "$e")
 	f="$n$o/g"
+	c=$(sub "$a")
+	d=$(sub "$b")
+	g=$(sub "$e")
 	h=$(sub "$f")
-	sponge=$(sed "s/a/$a" <<< $sponge)
-	sponge=$(sed "s/b/$b" <<< $sponge)
-	sponge=$(sed "s/c/$c" <<< $sponge)
-	sponge=$(sed "s/d/$d" <<< $sponge)
-	sponge=$(sed "s/f/$f" <<< $sponge)
-	sponge=$(sed "s/h/$h" <<< $sponge)
-	sponge=$(sed "s/e/$e" <<< $sponge)
-	sponge=$(sed "s/g/$g" <<< $sponge)
+	sponge=$(sed "$(for i in {a..h}; do printf "s/${i}/${!i};";done)" <<< $sponge)
 	sponge=$(sed "s/m/$(repeat 81 V)/g" <<< $sponge)
 	sponge=$(sed "s/9\([A-Z]*\)/3\13\13\1 /g;s/3\([A-Z]*\)/\1\1\1 /g" <<< $sponge)
 	sponge=$(sed 's/\s//g;s/T/XXX/g;s/U/XSX/g;s/V/SSS/g' <<< $sponge)
