@@ -18,10 +18,16 @@ function hook_chunks() {
 	sponge=$(sed 's/E1/imi/g;s/E2/jmj/g' <<< $sponge)
 	sponge=$(sed 's/F1/kmk/g;s/F2/lml/g' <<< $sponge)
 
-	sponge=$(sed "s/a/N3TVT3UVU3TVTN /g;s/N/9T9U9T /g" <<< $sponge)
+	a="N3TVT3UVU3TVTN /g;s/N/9T9U9T /g"
+	c=$(sed "s/U/V/g;s/T/U/g" <<< $a)
+	sponge=$(sed "s/a/$a" <<< $sponge)
 	sponge=$(sed "s/b/N TVT3V TVT UVU3V UVU TVT3V TVT N /g;s/N/3T3V3T3U3V3U3T3V3T /g" <<< $sponge)
-	sponge=$(sed "s/[ceg]/$(repeat 81 T)/g" <<< $sponge)
-	sponge=$(sed "s/[dfh]/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
+	sponge=$(sed "s/c/$c" <<< $sponge)
+	sponge=$(sed "s/d/N UVU3V UVU VVV3V VVV UVU3V UVU N /g;s/N/3U3V3U3V3V3V3U3V3U /g" <<< $sponge)
+	eg="N9V9V9VN /g;s/N/ TVTTVTTVT UVUUVUUVU TVTTVTTVT /g"
+	sponge=$(sed "s/e/$eg" <<< $sponge)
+	sponge=$(sed "s/g/$(sed "s/U/V/g;s/T/U/g" <<< $eg)" <<< $sponge)
+	sponge=$(sed "s/[fh]/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
 	sponge=$(sed "s/[ijkl]/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
 	sponge=$(sed "s/m/$(repeat 81 V)/g" <<< $sponge)
 	sponge=$(sed "s/9\([A-Z]*\)/3\13\13\1 /g;s/3\([A-Z]*\)/\1\1\1 /g" <<< $sponge)
