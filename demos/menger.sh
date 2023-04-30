@@ -17,7 +17,7 @@ function blk() {
 }
 
 function hook_chunks() {
-	# Build 27x27 sponge:
+	# Build Level 4 (27x27x27) sponge:
 	n="N9V9V9VN /g;s/N/"
 	o=" TVT3V TVTUVU3V UVUTVT3V TVT "
 	a="N3TVT3UVU3TVTN /g;s/N/9T9U9T /g"
