@@ -8,6 +8,10 @@ function hook_ping() {
 	send_packet "00" "$res"
 }
 
+function sub() {
+	sed "s/U/V/g;s/T/U/g" <<< $1
+}
+
 function hook_chunks() {
 	# Build 27x27 sponge:
 	sponge=ABA
@@ -19,16 +23,23 @@ function hook_chunks() {
 	sponge=$(sed 's/F1/kmk/g;s/F2/lml/g' <<< $sponge)
 
 	a="N3TVT3UVU3TVTN /g;s/N/9T9U9T /g"
-	c=$(sed "s/U/V/g;s/T/U/g" <<< $a)
+	c=$(sub "$a")
+	b="N TVT3V TVT UVU3V UVU TVT3V TVT N /g;s/N/3T3V3T3U3V3U3T3V3T /g"
+	d=$(sub "$b")
+	e="N9V9V9VN /g;s/N/ TVTTVTTVT UVUUVUUVU TVTTVTTVT /g"
+	g=$(sub "$e")
+	f="N 9V9V9V N /g;s/N/TVT 3V TVT UVU 3V UVU TVT 3V TVT /g"
+	h=$(sub "$f")
 	sponge=$(sed "s/a/$a" <<< $sponge)
-	sponge=$(sed "s/b/N TVT3V TVT UVU3V UVU TVT3V TVT N /g;s/N/3T3V3T3U3V3U3T3V3T /g" <<< $sponge)
+	sponge=$(sed "s/[bi]/$b" <<< $sponge)
 	sponge=$(sed "s/c/$c" <<< $sponge)
-	sponge=$(sed "s/d/N UVU3V UVU VVV3V VVV UVU3V UVU N /g;s/N/3U3V3U3V3V3V3U3V3U /g" <<< $sponge)
-	eg="N9V9V9VN /g;s/N/ TVTTVTTVT UVUUVUUVU TVTTVTTVT /g"
-	sponge=$(sed "s/e/$eg" <<< $sponge)
-	sponge=$(sed "s/g/$(sed "s/U/V/g;s/T/U/g" <<< $eg)" <<< $sponge)
-	sponge=$(sed "s/[fh]/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
-	sponge=$(sed "s/[ijkl]/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
+	sponge=$(sed "s/[dj]/$d" <<< $sponge)
+	sponge=$(sed "s/[fk]/$f" <<< $sponge)
+	sponge=$(sed "s/[hl]/$h" <<< $sponge)
+	sponge=$(sed "s/e/$e" <<< $sponge)
+	sponge=$(sed "s/g/$g" <<< $sponge)
+	#sponge=$(sed "s/h/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
+	#sponge=$(sed "s/l/$(repeat 9 "TTTVVVTTT")/g" <<< $sponge)
 	sponge=$(sed "s/m/$(repeat 81 V)/g" <<< $sponge)
 	sponge=$(sed "s/9\([A-Z]*\)/3\13\13\1 /g;s/3\([A-Z]*\)/\1\1\1 /g" <<< $sponge)
 	sponge=$(sed 's/\s//g;s/T/XXX/g;s/U/XSX/g;s/V/SSS/g' <<< $sponge)
