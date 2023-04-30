@@ -54,15 +54,17 @@ function hook_chunks() {
 
 	#readarray -t one < <(fold -w8192 <<< $one)
 	chunk_header
-	chunk+=$one
-	chunk+=$(printf '00%.0s' {1..1792})
+	xhead=$chunk
+	chunk+=${one::8192}000100$xhead
+	chunk+=${one:8192}$(repeat $((8192 - $(wc -c <<< ${one:8192}) + 1)) 0)
 	chunk_footer
 	echo "$chunk" > $TEMP/world/0000000000000000
 
 	#readarray -t two < <(fold -w8192 <<< $two)
 	chunk_header
-	chunk+=$two
-	chunk+=$(printf '00%.0s' {1..1792})
+	xhead=$chunk
+	chunk+=${two::8192}000100$xhead
+	chunk+=${two:8192}$(repeat $((8192 - $(wc -c <<< ${two:8192}) + 1)) 0)
 	chunk_footer
 	echo "$chunk" > $TEMP/world/FFFFFFFF00000000
 
@@ -72,15 +74,16 @@ function hook_chunks() {
 	xhead=$chunk
 	chunk+=${tri::8192}
 	chunk+="00 01 00"
-	chunk+=${xhead}
+	chunk+=$xhead
 	chunk+=${tri:8192}$(repeat $((8192 - $(wc -c <<< ${tri:8192}) + 1)) 0)
 	chunk_footer
 	echo "$chunk" > $TEMP/world/0000000000000001
 
 	#readarray -t tet < <(fold -w8192 <<< $tet)
 	chunk_header
-	chunk+=$tet
-	chunk+=$(printf '00%.0s' {1..1792})
+	xhead=$chunk
+	chunk+=${tet::8192}000100$xhead
+	chunk+=${tet:8192}$(repeat $((8192 - $(wc -c <<< ${tet:8192}) + 1)) 0)
 	chunk_footer
 	echo "$chunk" > $TEMP/world/FFFFFFFF00000001
 
