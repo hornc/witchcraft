@@ -16,6 +16,15 @@ function blk() {
 	sed 's/X/13/g;s/S/00/g' <<< $1
 }
 
+function cnk() {
+	chunk_header
+	xhead=$chunk
+	chunk+=${1::8192}000100$xhead
+	chunk+=${1:8192}$(repeat $((8192 - $(wc -c <<< ${2:8192}) + 1)) 0)
+	chunk_footer
+	echo "$chunk" > $TEMP/world/$2
+}
+
 function hook_chunks() {
 	# Build Level 4 (27x27x27) sponge:
 	n="N9V9V9VN /g;s/N/"
@@ -24,10 +33,7 @@ function hook_chunks() {
 	b="N${o}N /g;s/N/3T3V3T3U3V3U3T3V3T /g"
 	e="$n 3TVT3UVU3TVT /g"
 	f="$n$o/g"
-	c=$(swp "$a")
-	d=$(swp "$b")
-	g=$(swp "$e")
-	h=$(swp "$f")
+	c=$(swp "$a");d=$(swp "$b");g=$(swp "$e");h=$(swp "$f")
 	sponge=$(sed "s/A/CDC/g;s/B/EFE/g;
 		s/\([CDEF]\)/\11\12\11/g;
 		s/C1/aba/g;s/C2/cdc/g;
@@ -45,7 +51,7 @@ function hook_chunks() {
 	gap=$(repeat 48 00)
 	while read row; do
 		read a b < <(sed "s/^\(.\{6\}\)\(.\{8\}\)\(.\{8\}\)\(.\{5\}\)$/\2SS\1 \4SSS\3/" <<< $row)
-		log $row $i
+		log $(sed 's/X/⧈/g;s/S/ /g' <<< $row) $i
 		if (( i == 0 )); then
 		  one+=$(repeat 32 00)
 		  two+=$(repeat 32 00)
@@ -63,54 +69,13 @@ function hook_chunks() {
 	       	fi
 	done < <(fold -w27 <<< $sponge)
 
-	#readarray -t one < <(fold -w8192 <<< $one)
-	chunk_header
-	xhead=$chunk
-	chunk+=${one::8192}000100$xhead
-	chunk+=${one:8192}$(repeat $((8192 - $(wc -c <<< ${one:8192}) + 1)) 0)
-	chunk_footer
-	echo "$chunk" > $TEMP/world/0000000000000000
+	cnk "$one" 0000000000000000
+	cnk "$two" FFFFFFFF00000000
+	cnk "$tri" 0000000000000001
+	cnk "$tet" FFFFFFFF00000001
 
-	#readarray -t two < <(fold -w8192 <<< $two)
-	chunk_header
-	xhead=$chunk
-	chunk+=${two::8192}000100$xhead
-	chunk+=${two:8192}$(repeat $((8192 - $(wc -c <<< ${two:8192}) + 1)) 0)
-	chunk_footer
-	echo "$chunk" > $TEMP/world/FFFFFFFF00000000
-
-
-	#readarray -t tri < <(fold -w8192 <<< $tri)
-	chunk_header
-	xhead=$chunk
-	chunk+=${tri::8192}
-	chunk+="00 01 00"
-	chunk+=$xhead
-	chunk+=${tri:8192}$(repeat $((8192 - $(wc -c <<< ${tri:8192}) + 1)) 0)
-	chunk_footer
-	echo "$chunk" > $TEMP/world/0000000000000001
-
-	#readarray -t tet < <(fold -w8192 <<< $tet)
-	chunk_header
-	xhead=$chunk
-	chunk+=${tet::8192}000100$xhead
-	chunk+=${tet:8192}$(repeat $((8192 - $(wc -c <<< ${tet:8192}) + 1)) 0)
-	chunk_footer
-	echo "$chunk" > $TEMP/world/FFFFFFFF00000001
-
-	#pkt_chunk FFFFFFFF FFFFFFFF 00
+	pkt_chunk 00000000 00000000  # one
 	pkt_chunk FFFFFFFF 00000000  # two
+	pkt_chunk 00000000 00000001  # three
 	pkt_chunk FFFFFFFF 00000001  # four
-	#pkt_chunk FFFFFFFF 00000002 00
-	#pkt_chunk FFFFFFFF 00000003 00
-
-	#pkt_chunk 00000000 FFFFFFFF 00
-	pkt_chunk 00000000 00000000   # one
-	pkt_chunk 00000000 00000001   # three
-	#pkt_chunk 00000000 00000002 00
-	#pkt_chunk 00000000 00000003 00
-	
-	#pkt_chunk 00000001 FFFFFFFF 00
-	#pkt_chunk 00000001 00000000 00
-	#pkt_chunk 00000001 00000001 00
 }
